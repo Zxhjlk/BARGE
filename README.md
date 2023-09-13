@@ -33,7 +33,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About
-<p align="center">The Accessible Routes project was established to provide students with a guide to navigating a less-than-accessible campus.</p>
+<p align="center">Carrying on the Kanban dream.</p>
 
 ### Built With
 
@@ -50,9 +50,9 @@
     * GitHub Desktop: download [here](https://desktop.github.com/)
     * Clone repo through Git Bash
     ```sh
-    $ git clone https://github.com/json-mp3/Accessible-Routes
+    $ git clone https://github.com/RafaelCenzano/BARGE
     ```
-    * To fork, press the fork button on the top right of the repo, or [here](https://github.com/json-mp3/Accessible-Routes/fork)
+    * To fork, press the fork button on the top right of the repo, or [here](https://github.com/RafaelCenzano/BARGE/fork)
  * Node.js 
     * Download [here](https://nodejs.org/en/download)
 
