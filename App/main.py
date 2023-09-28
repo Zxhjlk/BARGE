@@ -6,3 +6,4 @@ if __name__ == "__main__":
       window = QWidget()
       window.show
       app.exec()
+      #Main launch of window
