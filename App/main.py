@@ -3,7 +3,7 @@ import sys
 
 app = QApplication(sys.argv)
 window = QWidget()
-window.show
+window.show()
 
 if __name__ == "__main__":
     app.exec()
