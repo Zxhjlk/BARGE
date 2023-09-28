@@ -35,7 +35,7 @@
 ## About
 <div align="center">
     <a href="https://github.com/dinobenj/BARGE">
-<img src="https://github.com/Zxhjlk/BARGE/blob/main/bargeLogo.png" alt="Barge Logo" width="360" height="216">
+<img src="https://github.com/RafaelCenzano/BARGE/blob/main/bargeLogo.png" alt="Barge Logo" width="360" height="216">
 </a>
 <h3 align="center">BARGE</h3>
 <p>Carrying on the Kanban dream.</p>
