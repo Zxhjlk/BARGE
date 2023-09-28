@@ -33,15 +33,21 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About
-<p align="center">Carrying on the Kanban dream.</p>
+<div align="center">
+    <a href="https://github.com/dinobenj/BARGE">
+<img src="https://github.com/Zxhjlk/BARGE/blob/main/bargeLogo.png" alt="Barge Logo" width="360" height="216">
+</a>
+<h3 align="center">BARGE</h3>
+<p>Carrying on the Kanban dream.</p>
+</div>
+
 
 ### Built With
 
 * [![React][React.js]][React-url]
-* [![Node][Node.js]][Node-url]
 * [![JavaScript][JavaScript.com]][JavaScript-url]
 * [![MongoDB][MongoDB.com]][MongoDB-url]
-* [![Open Street Map][OpenStreetMap.com]][OpenStreetMap-url]
+* [![Python][Python.com]][Python-url]
 
 
 <!-- Getting Started -->
@@ -57,45 +63,25 @@
     * Download [here](https://nodejs.org/en/download)
 
 
-## Installation
-1. Open terminal in the project folder and change directory to the webb folder
-    ```sh
-    cd webb
-    ```
-2. There will be a few commands that need to be run before opening the website
-    ```sh
-    npm install
-    ```
-    ```sh
-    npm install react react-dom leaflet
-    ```
-    ```sh
-	npm install react-leaflet
-    ```
-3. Open the website
-    ```sh
-    npm start
-    ```
-
 ## License
 
-Distributed under the MIT License. See [LICENSE](https://github.com/json-mp3/Accessible-Routes/blob/main/LICENSE) for more information.
+Distributed under the MIT License. See [LICENSE](https://github.com/RafaelCenzano/BARGE/blob/main/LICENSE) for more information.
 
 <!-- https://home.aveek.io/GitHub-Profile-Badges/ -->
 
 <!-- LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/json-mp3/Accessible-Routes.svg?style=for-the-badge
-[contributors-url]: https://github.com/json-mp3/Accessible-Routes/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/json-mp3/Accessible-Routes.svg?style=for-the-badge
-[forks-url]: https://github.com/json-mp3/Accessible-Routes/network/members
-[stars-shield]: https://img.shields.io/github/stars/json-mp3/Accessible-Routes.svg?style=for-the-badge
-[stars-url]: https://github.com/json-mp3/Accessible-Routes/stargazers
-[issues-shield]: https://img.shields.io/github/issues/json-mp3/Accessible-Routes.svg?style=for-the-badge
-[issues-url]:  https://github.com/json-mp3/Accessible-Routes/issues
-[license-shield]: https://img.shields.io/github/license/json-mp3/Accessible-Routes.svg?style=for-the-badge
-[license-url]: https://github.com/json-mp3/Accessible-Routes/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/RafaelCenzano/BARGE.svg?style=for-the-badge
+[contributors-url]: https://github.com/RafaelCenzano/BARGE/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/RafaelCenzano/BARGE.svg?style=for-the-badge
+[forks-url]: https://github.com/RafaelCenzano/BARGE/network/members
+[stars-shield]: https://img.shields.io/github/stars/RafaelCenzano/BARGE.svg?style=for-the-badge
+[stars-url]: https://github.com/RafaelCenzano/BARGE/stargazers
+[issues-shield]: https://img.shields.io/github/issues/RafaelCenzano/BARGE.svg?style=for-the-badge
+[issues-url]:  https://github.com/RafaelCenzano/BARGE/issues
+[license-shield]: https://img.shields.io/github/license/RafaelCenzano/BARGE.svg?style=for-the-badge
+[license-url]: https://github.com/RafaelCenzano/BARGE/blob/master/LICENSE.txt
 
-[activity-shield]: https://img.shields.io/github/last-commit/json-mp3/accessible-routes?style=for-the-badge
+[activity-shield]: https://img.shields.io/github/last-commit/RafaelCenzano/BARGE?style=for-the-badge
 [activity-url]: https://github.com/Zxhjlk/Accessible-Routes/activity
 
 
@@ -106,7 +92,5 @@ Distributed under the MIT License. See [LICENSE](https://github.com/json-mp3/Acc
 [React-url]: https://reactjs.org/
 [MongoDB.com]: https://img.shields.io/badge/MongoDB-47A248.svg?style=for-the-badge&logo=MongoDB&logoColor=white
 [MongoDB-url]: https://www.mongodb.com/
-[OpenStreetMap.com]: https://img.shields.io/badge/OpenStreetMap-7EBC6F.svg?style=for-the-badge&logo=OpenStreetMap&logoColor=white
-[OpenStreetMap-url]: https://openstreetmap.org
-[Node.js]: https://img.shields.io/badge/Node.js-339933.svg?style=for-the-badge&logo=nodedotjs&logoColor=white
-[Node-url]: https://nodejs.org/en
+[Python.com]: https://img.shields.io/badge/Python-3776AB.svg?style=for-the-badge&logo=Python&logoColor=white
+[Python-url]: https://www.python.org/
