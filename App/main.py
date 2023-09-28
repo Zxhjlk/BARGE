@@ -4,6 +4,6 @@ import sys
 if __name__ == "__main__":
       app = QApplication(sys.argv)
       window = QWidget()
-      window.show
+      window.show()
       app.exec()
       #Main launch of window
