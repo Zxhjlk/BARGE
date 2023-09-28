@@ -44,8 +44,6 @@
 
 ### Built With
 
-* [![React][React.js]][React-url]
-* [![JavaScript][JavaScript.com]][JavaScript-url]
 * [![MongoDB][MongoDB.com]][MongoDB-url]
 * [![Python][Python.com]][Python-url]
 
@@ -59,8 +57,12 @@
     $ git clone https://github.com/RafaelCenzano/BARGE
     ```
     * To fork, press the fork button on the top right of the repo, or [here](https://github.com/RafaelCenzano/BARGE/fork)
- * Node.js 
-    * Download [here](https://nodejs.org/en/download)
+ * PyQt6 
+    * Download [here](https://pypi.org/project/PyQt6/)
+    * Or download through the command line
+    ```sh
+    $ python -m pip install pyqt6
+    ```
 
 
 ## License
