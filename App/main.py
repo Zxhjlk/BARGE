@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt6.QtWidgets import QApplication, QWidget
 import sys
 
 if __name__ == "__main__":
