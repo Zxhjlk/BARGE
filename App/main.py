@@ -1,9 +1,17 @@
-from PyQt6.QtWidgets import QApplication, QWidget
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QMainWindow
 import sys
-
-app = QApplication(sys.argv)
-window = QWidget()
-window.show()
+class MainWindow(QMainWindow):
+      def __init__(self):
+            super(MainWindow, self).__init__()
+            self.setWindowTitle("Barge Kanban")            
+            layout = QVBoxLayout()
+            widget = QWidget()
+            widget.setLayout(layout)
+            self.setCentralWidget(widget)
 
 if __name__ == "__main__":
-    app.exec()
+      app = QApplication(sys.argv)
+      window = MainWindow()
+      window.show()
+      app.exec()
+      #Main launch of window
