@@ -46,6 +46,7 @@
 
 * [![MongoDB][MongoDB.com]][MongoDB-url]
 * [![Python][Python.com]][Python-url]
+* [![QT][QT.com]][QT-url]
 
 
 <!-- Getting Started -->
@@ -96,3 +97,5 @@ Distributed under the MIT License. See [LICENSE](https://github.com/RafaelCenzan
 [MongoDB-url]: https://www.mongodb.com/
 [Python.com]: https://img.shields.io/badge/Python-3776AB.svg?style=for-the-badge&logo=Python&logoColor=white
 [Python-url]: https://www.python.org/
+[QT.com]: https://img.shields.io/badge/Qt-41CD52.svg?style=for-the-badge&logo=Qt&logoColor=white
+[QT-url]: https://www.qt.io/qt-for-python
