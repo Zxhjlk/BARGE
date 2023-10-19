@@ -80,10 +80,6 @@ class MainWindow(QMainWindow):
             ))
             add_button.clicked.connect(dialog.accept)
 
-            #cancel button
-            #cancel_button = QPushButton("Cancel", dialog)
-            #cancel_button.clicked.connect(dialog.reject)
-
             buttons_layout.addWidget(add_button)
             dialog_Layout.addRow(buttons_layout)
 
@@ -97,6 +93,7 @@ class MainWindow(QMainWindow):
             self.board.addTask(newTask)
 
             item = QListWidgetItem(newTask.name)
+
             self.toDo_List.addItem(item)
 
 
