@@ -1,5 +1,8 @@
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QMainWindow
 import sys
+
+import sync
+
 class MainWindow(QMainWindow):
       def __init__(self):
             super(MainWindow, self).__init__()
