@@ -1,5 +1,6 @@
-from PyQt6.QtWidgets import QLineEdit, QApplication, QFormLayout, QLabel, QWidget, QMessageBox
+from PyQt6.QtWidgets import QLineEdit, QApplication, QFormLayout, QLabel, QWidget, QMessageBox, QComboBox, QMenu
 from PyQt6.QtWidgets import QVBoxLayout, QDialog, QHBoxLayout, QMainWindow, QListWidget, QListWidgetItem, QPushButton
+from PyQt6.QtCore import Qt
 import sys
 from task import Task
 from taskList import taskList
@@ -11,17 +12,16 @@ class MainWindow(QMainWindow):
             self.setWindowTitle("Barge Kanban")   
             self.setGeometry(100, 100, 800, 400)     
 
-            
             widget = QWidget()
             self.layout = QHBoxLayout(widget)
             self.setCentralWidget(widget)
 
             self.board = taskList("test Board")
+            self.taskDict = {}
 
             self.setUp_ui()
 
       def setUp_ui(self):
-
             self.toDo_List = QListWidget()
             self.toDo_List.setMinimumWidth(300)
             self.toDo_List.setMaximumWidth(400)
@@ -34,16 +34,19 @@ class MainWindow(QMainWindow):
             self.done_List.setMinimumWidth(300)
             self.done_List.setMaximumWidth(400)
 
+            self.toDo_List.itemClicked.connect(self.clickTaskScript)
+            self.inProgress_List.itemClicked.connect(self.clickTaskScript)
+            self.done_List.itemClicked.connect(self.clickTaskScript)
+
             self.addTask_button = QPushButton('Add Task')
             self.addTask_button.clicked.connect(self.addTaskScript)
 
             self.layout.addWidget(self.column_ui("To Do", self.toDo_List))
-            self.layout.addWidget(self.column_ui("Progress",self.inProgress_List))
+            self.layout.addWidget(self.column_ui("In Progress",self.inProgress_List))
             self.layout.addWidget(self.column_ui("Done",self.done_List))
             self.layout.addWidget(self.addTask_button)
 
       def column_ui(self, title, list_widget):
-
             column_layout = QVBoxLayout()
             column_label = QLabel(title)
             column_label.setStyleSheet("font-weight: bold;")
@@ -56,8 +59,6 @@ class MainWindow(QMainWindow):
 
             return group_container
             
-       
-
       def addTaskScript(self):
             dialog = QDialog(self)
             dialog.setWindowTitle("Add Task")
@@ -66,17 +67,21 @@ class MainWindow(QMainWindow):
             id_input = QLineEdit(dialog)
             name_input = QLineEdit(dialog)
             description_input = QLineEdit(dialog)
-
+            status_input = QComboBox(dialog)
+            status_input.addItems(["To Do", "In Progress", "Done"])
+            
             dialog_Layout.addRow("ID:", id_input)
             dialog_Layout.addRow("Name:", name_input)
-            dialog_Layout.addRow("Description:", description_input)
-            
+            dialog_Layout.addRow("Description:", description_input)     
+            dialog_Layout.addRow("Status:", status_input)
+
             buttons_layout = QHBoxLayout()
 
             #add button
             add_button = QPushButton("Add", dialog)
             add_button.clicked.connect(lambda: self.addTaskToBoard(
-                  id_input.text(), name_input.text(), description_input.text()
+                  id_input.text(), name_input.text(), description_input.text(),
+                  status_input.currentText()
             ))
             add_button.clicked.connect(dialog.accept)
 
@@ -86,16 +91,54 @@ class MainWindow(QMainWindow):
             if dialog.exec() == QDialog.DialogCode.Accepted:
                   QMessageBox.information(self, "Task Added", "The new task has been added successfully!")
             
-      def addTaskToBoard(self, id, name, description):
+      def addTaskToBoard(self, id, name, description, status):
             newTask = Task(id, name, description, "1/1/1999",["www.google.com", "www.duckduckgo.com"], 
-            ["me", "you"], 5, "To Do" )
+            ["me", "you"], 5, status )
 
             self.board.addTask(newTask)
-
+            self.taskDict[id] = newTask
             item = QListWidgetItem(newTask.name)
+            item.setData(Qt.ItemDataRole.UserRole, id)
 
-            self.toDo_List.addItem(item)
+            if(status == "To Do"):
+                  self.toDo_List.addItem(item)
+            elif(status == "In Progress"):
+                  self.inProgress_List.addItem(item)
+            elif(status == "Done"):
+                  self.done_List.addItem(item)
 
+      def clickTaskScript(self, item):
+            dialog = QDialog(self)
+            dialog.setWindowTitle("Task Options")
+            dialog_layout = QVBoxLayout(dialog)
+
+            edit_button = QPushButton("Edit Task")
+            delete_button = QPushButton("Delete Task")
+            view_button = QPushButton("View Task")
+
+            edit_button.clicked.connect(lambda: self.edit_task(item))
+            delete_button.clicked.connect(lambda: self.delete_task(item))
+            view_button.clicked.connect(lambda: self.viewTaskScript(item))
+
+            dialog_layout.addWidget(edit_button)
+            dialog_layout.addWidget(delete_button)
+            dialog_layout.addWidget(view_button)
+
+            dialog.setLayout(dialog_layout)
+            dialog.exec()
+      
+      def viewTaskScript(self, item):
+            task_id = item.data(Qt.ItemDataRole.UserRole)  
+            task = self.taskDict.get(task_id)
+
+            if task:
+                  task_info = (f"Name: {task.name}\n"
+                        f"Description: {task.description}\n"
+                        f"Status: {task.progress}\n"
+                  )
+
+            QMessageBox.information(self, "Task Information", task_info)
+            
 
 if __name__ == "__main__":
       app = QApplication(sys.argv)
