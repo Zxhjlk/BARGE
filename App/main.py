@@ -1,22 +1,20 @@
-from PyQt6.QtWidgets import (
-    QLineEdit,
-    QApplication,
-    QFormLayout,
-    QLabel,
-    QWidget,
-    QMessageBox,
-)
-from PyQt6.QtWidgets import (
-    QVBoxLayout,
-    QDialog,
-    QHBoxLayout,
-    QMainWindow,
-    QListWidget,
-    QListWidgetItem,
-    QPushButton,
-)
 import sys
 
+from PyQt6.QtWidgets import (
+    QApplication,
+    QDialog,
+    QFormLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QListWidgetItem,
+    QMainWindow,
+    QMessageBox,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 from sync import Syncing
 from task import Task
 from taskList import taskList
