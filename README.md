@@ -57,11 +57,10 @@
     $ git clone https://github.com/RafaelCenzano/BARGE
     ```
     * To fork, press the fork button on the top right of the repo, or [here](https://github.com/RafaelCenzano/BARGE/fork)
- * PyQt6 
-    * Download [here](https://pypi.org/project/PyQt6/)
-    * Or download through the command line
+ * Install All Requirements 
+    * Download through the command line
     ```sh
-    $ python -m pip install pyqt6
+    $ pip install -r requirements.txt
     ```
 
 
