@@ -203,7 +203,7 @@ class MainWindow(QMainWindow):
                 elif task.progress == "In Progress":
                     self.inProgress_List.addItem(item)
                 elif task.progress == "Done":
-                    self.done_List.addItem(item)     
+                    self.done_List.addItem(item)
 
 
 if __name__ == "__main__":
