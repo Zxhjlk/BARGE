@@ -1,16 +1,9 @@
 import sys
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QApplication,
-    QFormLayout,
-    QLabel,
-    QWidget,
-    QMessageBox,
-    QComboBox, 
-    QMenu
-)
-from PyQt6.QtWidgets import (
-    QVBoxLayout,
+    QComboBox,
     QDialog,
     QFormLayout,
     QHBoxLayout,
@@ -19,14 +12,13 @@ from PyQt6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QMainWindow,
+    QMenu,
     QMessageBox,
     QPushButton,
     QVBoxLayout,
     QWidget,
 )
 from sync import Syncing
-from PyQt6.QtCore import Qt
-import sys
 from task import Task
 from taskList import taskList
 
@@ -107,8 +99,10 @@ class MainWindow(QMainWindow):
         add_button = QPushButton("Add", dialog)
         add_button.clicked.connect(
             lambda: self.addTaskToBoard(
-                id_input.text(), name_input.text(), description_input.text(),
-                status_input.currentText()
+                id_input.text(),
+                name_input.text(),
+                description_input.text(),
+                status_input.currentText(),
             )
         )
         add_button.clicked.connect(dialog.accept)
@@ -137,12 +131,12 @@ class MainWindow(QMainWindow):
         self.taskDict[id] = newTask
         item = QListWidgetItem(newTask.name)
         item.setData(Qt.ItemDataRole.UserRole, id)
-        
-        if(status == "To Do"):
+
+        if status == "To Do":
             self.toDo_List.addItem(item)
-        elif(status == "In Progress"):
+        elif status == "In Progress":
             self.inProgress_List.addItem(item)
-        elif(status == "Done"):
+        elif status == "Done":
             self.done_List.addItem(item)
 
     def clickTaskScript(self, item):
@@ -166,17 +160,17 @@ class MainWindow(QMainWindow):
         dialog.exec()
 
     def viewTaskScript(self, item):
-        task_id = item.data(Qt.ItemDataRole.UserRole)  
+        task_id = item.data(Qt.ItemDataRole.UserRole)
         task = self.taskDict.get(task_id)
 
         if task:
-            task_info = (f"Name: {task.name}\n"
-                        f"Description: {task.description}\n"
-                        f"Status: {task.progress}\n"
+            task_info = (
+                f"Name: {task.name}\n"
+                f"Description: {task.description}\n"
+                f"Status: {task.progress}\n"
             )
 
         QMessageBox.information(self, "Task Information", task_info)
-        
 
 
 if __name__ == "__main__":

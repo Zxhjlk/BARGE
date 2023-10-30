@@ -37,7 +37,9 @@ class Syncing:
             )
 
             if response.status_code != 201:
-                print(f"Unable to create GitHub repository, recieved {response.status_code} from GitHub")
+                print(
+                    f"Unable to create GitHub repository, recieved {response.status_code} from GitHub"
+                )
                 exit()
 
             created_repo = ""
