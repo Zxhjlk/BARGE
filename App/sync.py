@@ -22,6 +22,7 @@ class Syncing:
                 print("Auth token needed")
                 exit()
 
+            # TODO: iterate through numbers
             num = 0
             name = f"BARGE-Kanban-{num}"
             payload = {
@@ -42,6 +43,7 @@ class Syncing:
                 )
                 exit()
 
+            # TODO: Get url of repo created from github
             created_repo = ""
             self.repo.create_remote("origin", created_repo)
             self.repo.index.add([json_path])
