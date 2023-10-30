@@ -5,8 +5,8 @@ from os.path import abspath, exists, isdir, join
 from git import Repo
 from requests import post
 
-data_path = join(abspath(join(__file__, "../")), "data")
-json_path = join(data_path, "data.json")
+data_path = join(abspath(join(__file__, "../")), "board_data")
+json_path = join(data_path, "testBoard_taskList.json")
 print(data_path, json_path)
 
 

@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import (
 )
 from sync import Syncing
 from task import Task
-from taskList import taskList
+from taskList import TaskList
 
 
 class MainWindow(QMainWindow):
@@ -33,7 +33,7 @@ class MainWindow(QMainWindow):
         self.layout = QHBoxLayout(widget)
         self.setCentralWidget(widget)
 
-        self.board = taskList("test Board")
+        self.board = TaskList("test Board")
         self.taskDict = {}
 
         self.setUp_ui()
