@@ -2,6 +2,15 @@ import sys
 
 from PyQt6.QtWidgets import (
     QApplication,
+    QFormLayout,
+    QLabel,
+    QWidget,
+    QMessageBox,
+    QComboBox, 
+    QMenu
+)
+from PyQt6.QtWidgets import (
+    QVBoxLayout,
     QDialog,
     QFormLayout,
     QHBoxLayout,
@@ -16,6 +25,8 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 from sync import Syncing
+from PyQt6.QtCore import Qt
+import sys
 from task import Task
 from taskList import taskList
 
@@ -32,6 +43,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
         self.board = taskList("test Board")
+        self.taskDict = {}
 
         self.setUp_ui()
 
@@ -47,6 +59,10 @@ class MainWindow(QMainWindow):
         self.done_List = QListWidget()
         self.done_List.setMinimumWidth(300)
         self.done_List.setMaximumWidth(400)
+
+        self.toDo_List.itemClicked.connect(self.clickTaskScript)
+        self.inProgress_List.itemClicked.connect(self.clickTaskScript)
+        self.done_List.itemClicked.connect(self.clickTaskScript)
 
         self.addTask_button = QPushButton("Add Task")
         self.addTask_button.clicked.connect(self.addTaskScript)
@@ -77,10 +93,13 @@ class MainWindow(QMainWindow):
         id_input = QLineEdit(dialog)
         name_input = QLineEdit(dialog)
         description_input = QLineEdit(dialog)
+        status_input = QComboBox(dialog)
+        status_input.addItems(["To Do", "In Progress", "Done"])
 
         dialog_Layout.addRow("ID:", id_input)
         dialog_Layout.addRow("Name:", name_input)
         dialog_Layout.addRow("Description:", description_input)
+        dialog_Layout.addRow("Status:", status_input)
 
         buttons_layout = QHBoxLayout()
 
@@ -88,7 +107,8 @@ class MainWindow(QMainWindow):
         add_button = QPushButton("Add", dialog)
         add_button.clicked.connect(
             lambda: self.addTaskToBoard(
-                id_input.text(), name_input.text(), description_input.text()
+                id_input.text(), name_input.text(), description_input.text(),
+                status_input.currentText()
             )
         )
         add_button.clicked.connect(dialog.accept)
@@ -101,7 +121,7 @@ class MainWindow(QMainWindow):
                 self, "Task Added", "The new task has been added successfully!"
             )
 
-    def addTaskToBoard(self, id, name, description):
+    def addTaskToBoard(self, id, name, description, status):
         newTask = Task(
             id,
             name,
@@ -114,10 +134,49 @@ class MainWindow(QMainWindow):
         )
 
         self.board.addTask(newTask)
-
+        self.taskDict[id] = newTask
         item = QListWidgetItem(newTask.name)
+        item.setData(Qt.ItemDataRole.UserRole, id)
+        
+        if(status == "To Do"):
+            self.toDo_List.addItem(item)
+        elif(status == "In Progress"):
+            self.inProgress_List.addItem(item)
+        elif(status == "Done"):
+            self.done_List.addItem(item)
 
-        self.toDo_List.addItem(item)
+    def clickTaskScript(self, item):
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Task Options")
+        dialog_layout = QVBoxLayout(dialog)
+
+        edit_button = QPushButton("Edit Task")
+        delete_button = QPushButton("Delete Task")
+        view_button = QPushButton("View Task")
+
+        edit_button.clicked.connect(lambda: self.edit_task(item))
+        delete_button.clicked.connect(lambda: self.delete_task(item))
+        view_button.clicked.connect(lambda: self.viewTaskScript(item))
+
+        dialog_layout.addWidget(edit_button)
+        dialog_layout.addWidget(delete_button)
+        dialog_layout.addWidget(view_button)
+
+        dialog.setLayout(dialog_layout)
+        dialog.exec()
+
+    def viewTaskScript(self, item):
+        task_id = item.data(Qt.ItemDataRole.UserRole)  
+        task = self.taskDict.get(task_id)
+
+        if task:
+            task_info = (f"Name: {task.name}\n"
+                        f"Description: {task.description}\n"
+                        f"Status: {task.progress}\n"
+            )
+
+        QMessageBox.information(self, "Task Information", task_info)
+        
 
 
 if __name__ == "__main__":
