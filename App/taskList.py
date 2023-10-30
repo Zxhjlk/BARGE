@@ -2,40 +2,47 @@ import json
 import os
 from task import Task
 
-
-class taskList:
+class TaskList:
     def __init__(self, boardName):
         self.numTasks = 0
         self.boardName = boardName
-        self.taskList = {self.boardName: {"numTasks": self.numTasks, "Tasks": []}}
-        json_object = json.dumps(self.taskList, indent=2)
-        if not os.path.isfile("test_AppData/taskList/" + boardName + "_taskList.json"):
-            with open(boardName + "_taskList.json", "w") as outfile:
-                outfile.write(json_object)
+        filename = boardName + "_taskList.json"
+        if os.path.isfile(filename):
+            with open(filename, "r") as infile:
+                file_data = json.load(infile)
+                self.numTasks = file_data[self.boardName]['numTasks']
 
     def addTask(self, newTask):
+        filename = self.boardName + "_taskList.json"
+
+        if not os.path.isfile(filename):
+            self.numTasks = 0
+            file_data = {self.boardName: {"numTasks": self.numTasks, "Tasks": []}}
+        else:
+            with open(filename, 'r') as file:
+                file_data = json.load(file)
+
+        existing_ids = {task['id'] for task in file_data[self.boardName]['Tasks']}
+        
+        if newTask.id in existing_ids:
+            newTask.id = self.numTasks
+
         taskDict = newTask.serialize()
-        with open(self.boardName + "_taskList.json", "r+") as file:
-            file_data = json.load(file)
-            if newTask not in file_data[self.boardName]["Tasks"]:
-                file_data[self.boardName]["Tasks"].append(taskDict)
-                file.seek(0)
-                json.dump(file_data, file, indent=2)
-                self.numTasks += 1
-            else:
-                return False
+        file_data[self.boardName]['Tasks'].append(taskDict)
+        self.numTasks += 1
+        file_data[self.boardName]['numTasks'] = self.numTasks
+
+        with open(filename, 'w') as file:
+            json.dump(file_data, file, indent=2)
+
         return True
 
+#test for local machine
+if __name__ == "__main__":
+    t = TaskList("testBoard")
 
-t = taskList("testBoard")
-newT = Task(
-    0,
-    "test",
-    "this is a test",
-    "01/01/9999",
-    ["www.google.com", "www.duckduckgo.com"],
-    ["me", "you"],
-    5,
-    "To Do",
-)
-t.addTask(newT)
+    newT = Task(0, "test", "this is a test", "01/01/9999", ["www.google.com", "www.duckduckgo.com"], ["me", "you"], 5, "To Do")
+    newT2 = Task(0, "test", "this is a test", "01/01/9999", ["www.google.com", "www.duckduckgo.com"], ["me", "you"], 5, "To Do")
+
+    t.addTask(newT)
+    t.addTask(newT2)
