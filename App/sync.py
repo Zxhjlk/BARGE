@@ -3,10 +3,31 @@ from json import dumps
 from os.path import abspath, exists, isdir, join
 
 from git import Repo
-from requests import post, get
+from requests import get, post
 
 
-class Syncing:
+# https://refactoring.guru/design-patterns/singleton/python/example#example-0
+class SingletonMeta(type):
+    """
+    The Singleton class can be implemented in different ways in Python. Some
+    possible methods include: base class, decorator, metaclass. We will use the
+    metaclass because it is best suited for this purpose.
+    """
+
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        """
+        Possible changes to the value of the `__init__` argument do not affect
+        the returned instance.
+        """
+        if cls not in cls._instances:
+            instance = super().__call__(*args, **kwargs)
+            cls._instances[cls] = instance
+        return cls._instances[cls]
+
+
+class Syncing(metaclass=SingletonMeta):
     def __init__(self, board_name="data", github_auth_token=None, git_url=None) -> None:
         data_path = join(abspath(join(__file__, "../")), board_name)
         self.json_path = join(data_path, "data.json")
