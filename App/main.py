@@ -38,6 +38,14 @@ class MainWindow(QMainWindow):
 
         self.setUp_ui()
 
+        # Syncing.checkToken("token")
+        # Return True if working token, False otherwise ask for Token
+        # This checkToken should be run when loading a token from local
+        # storage on app start and when new tokens are added
+        self.sync = Syncing("test Board", "token")
+        # self.sync.sync()
+        # This sync method should be run connected to the sync button
+
     def setUp_ui(self):
         self.toDo_List = QListWidget()
         self.toDo_List.setMinimumWidth(300)
