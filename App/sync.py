@@ -3,15 +3,15 @@ from json import dumps
 from os.path import abspath, exists, isdir, join
 
 from git import Repo
-from requests import post
-
-data_path = join(abspath(join(__file__, "../")), "board_data")
-json_path = join(data_path, "testBoard_taskList.json")
-print(data_path, json_path)
+from requests import post, get
 
 
 class Syncing:
-    def __init__(self, git_url=None, github_auth_token=None) -> None:
+    def __init__(self, board_name="data", github_auth_token=None, git_url=None) -> None:
+        data_path = join(abspath(join(__file__, "../")), board_name)
+        self.json_path = join(data_path, "data.json")
+        print(data_path, self.json_path)
+
         if isdir(data_path) and isdir(join(data_path, ".git")):
             self.repo = Repo(data_path)
         elif git_url:
@@ -46,7 +46,7 @@ class Syncing:
             # TODO: Get url of repo created from github
             created_repo = ""
             self.repo.create_remote("origin", created_repo)
-            self.repo.index.add([json_path])
+            self.repo.index.add([self.json_path])
             now = datetime.utcnow().strftime("%-m/%-d/%Y %H:%M:%S")
             self.repo.index.commit(f"Initial commit of tasks {now}")
             self.repo.git.push("--set-upstream", self.repo.remote().name, "main")
@@ -54,8 +54,13 @@ class Syncing:
     def sync(self) -> None:
         self.repo.remotes.origin.fetch()
         if self.repo.index.diff("HEAD"):
-            self.repo.index.add([json_path])
+            self.repo.index.add([self.json_path])
             now = datetime.utcnow().strftime("%-m/%-d/%Y %H:%M:%S")
             self.repo.index.commit(f"Update tasks {now}")
         self.repo.remotes.origin.pull(rebase=True)
         self.repo.remotes.origin.push()
+
+    @staticmethod
+    def checkToken(github_auth_token: str) -> bool:
+        headers = {"Authorization": f"Bearer {github_auth_token}"}
+        return 200 == get("https://api.github.com/user/repos", headers).status_code
