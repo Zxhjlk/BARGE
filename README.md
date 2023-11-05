@@ -44,7 +44,6 @@
 
 ### Built With
 
-* [![MongoDB][MongoDB.com]][MongoDB-url]
 * [![Python][Python.com]][Python-url]
 * [![QT][QT.com]][QT-url]
 
@@ -58,11 +57,10 @@
     $ git clone https://github.com/RafaelCenzano/BARGE
     ```
     * To fork, press the fork button on the top right of the repo, or [here](https://github.com/RafaelCenzano/BARGE/fork)
- * PyQt6 
-    * Download [here](https://pypi.org/project/PyQt6/)
-    * Or download through the command line
+ * Install All Requirements 
+    * Download through the command line
     ```sh
-    $ python -m pip install pyqt6
+    $ pip install -r requirements.txt
     ```
 
 
@@ -87,14 +85,6 @@ Distributed under the MIT License. See [LICENSE](https://github.com/RafaelCenzan
 [activity-shield]: https://img.shields.io/github/last-commit/RafaelCenzano/BARGE?style=for-the-badge
 [activity-url]: https://github.com/Zxhjlk/Accessible-Routes/activity
 
-
-
-[JavaScript.com]: https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=for-the-badge&logo=JavaScript&logoColor=black
-[JavaScript-url]: https://www.javascript.com/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[MongoDB.com]: https://img.shields.io/badge/MongoDB-47A248.svg?style=for-the-badge&logo=MongoDB&logoColor=white
-[MongoDB-url]: https://www.mongodb.com/
 [Python.com]: https://img.shields.io/badge/Python-3776AB.svg?style=for-the-badge&logo=Python&logoColor=white
 [Python-url]: https://www.python.org/
 [QT.com]: https://img.shields.io/badge/Qt-41CD52.svg?style=for-the-badge&logo=Qt&logoColor=white
