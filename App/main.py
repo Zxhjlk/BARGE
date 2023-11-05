@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import (
 )
 from sync import Syncing
 from task import Task
-from taskList import taskList
+from taskList import TaskList
 
 
 class MainWindow(QMainWindow):
@@ -33,10 +33,18 @@ class MainWindow(QMainWindow):
         self.layout = QHBoxLayout(widget)
         self.setCentralWidget(widget)
 
-        self.board = taskList("test Board")
+        self.board = TaskList("test Board")
         self.taskDict = {}
 
         self.setUp_ui()
+
+        # Syncing.checkToken("token")
+        # Return True if working token, False otherwise ask for Token
+        # This checkToken should be run when loading a token from local
+        # storage on app start and when new tokens are added
+        self.sync = Syncing("test Board", "token")
+        # self.sync.sync()
+        # This sync method should be run connected to the sync button
 
     def setUp_ui(self):
         self.toDo_List = QListWidget()
