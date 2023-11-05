@@ -66,10 +66,25 @@ class MainWindow(QMainWindow):
         self.addTask_button = QPushButton("Add Task")
         self.addTask_button.clicked.connect(self.addTaskScript)
 
+        self.search_bar = QLineEdit()
+        self.search_bar.setPlaceholderText("Search tasks")
+        self.search_bar.textChanged.connect(self.filterTasks)
+
+        button_layout = QVBoxLayout()
+        button_layout.addWidget(self.search_bar)
+
         self.layout.addWidget(self.column_ui("To Do", self.toDo_List))
         self.layout.addWidget(self.column_ui("Progress", self.inProgress_List))
         self.layout.addWidget(self.column_ui("Done", self.done_List))
         self.layout.addWidget(self.addTask_button)
+
+        main_layout = QVBoxLayout()
+        main_layout.addLayout(button_layout)
+        main_layout.addLayout(columns_layout)
+
+        widget = QWidget()
+        widget.setLayout(main_layout)
+        self.setCentralWidget(widget)
 
     def column_ui(self, title, list_widget):
         column_layout = QVBoxLayout()
@@ -131,7 +146,7 @@ class MainWindow(QMainWindow):
             ["www.google.com", "www.duckduckgo.com"],
             ["me", "you"],
             5,
-            "To Do",
+            status,
         )
 
         self.board.addTask(newTask)
@@ -178,6 +193,25 @@ class MainWindow(QMainWindow):
             )
 
         QMessageBox.information(self, "Task Information", task_info)
+
+    def filterTasks(self, query):
+        query = self.search_bar.text().lower()
+
+        # Clear all lists
+        self.toDo_List.clear()
+        self.inProgress_List.clear()
+        self.done_List.clear()
+        for task_id, task in self.taskDict.items():
+            if query in task.name.lower() or query in task.description.lower():
+                item = QListWidgetItem(task.name)
+                item.setData(Qt.ItemDataRole.UserRole, task_id)
+
+                if task.progress == "To Do":
+                    self.toDo_List.addItem(item)
+                elif task.progress == "In Progress":
+                    self.inProgress_List.addItem(item)
+                elif task.progress == "Done":
+                    self.done_List.addItem(item)
 
 
 if __name__ == "__main__":
