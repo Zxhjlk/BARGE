@@ -70,15 +70,15 @@ class MainController:
         dialog.setWindowTitle("Add Task")
         dialog_Layout = QFormLayout(dialog)
 
-        id_input = QLineEdit(dialog)
         name_input = QLineEdit(dialog)
         description_input = QLineEdit(dialog)
+        timeframe_input = QLineEdit(dialog)
         status_input = QComboBox(dialog)
         status_input.addItems(["To Do", "In Progress", "Done"])
 
-        dialog_Layout.addRow("ID:", id_input)
         dialog_Layout.addRow("Name:", name_input)
         dialog_Layout.addRow("Description:", description_input)
+        dialog_Layout.addRow("Timeframe(mm/dd/yyyy):", timeframe_input)
         dialog_Layout.addRow("Status:", status_input)
 
         buttons_layout = QHBoxLayout()
@@ -87,9 +87,9 @@ class MainController:
         add_button = QPushButton("Add", dialog)
         add_button.clicked.connect(
             lambda: self.addTaskToBoard(
-                id_input.text(),
                 name_input.text(),
                 description_input.text(),
+                timeframe_input.text(),
                 status_input.currentText(),
             )
         )
@@ -103,12 +103,12 @@ class MainController:
                 self.view, "Task Added", "The new task has been added successfully!"
             )
 
-    def addTaskToBoard(self, id, name, description, status):
+    def addTaskToBoard(self, name, description, timeframe, status):
         newTask = Task(
-            id,
+            0,
             name,
             description,
-            "1/1/1999",
+            timeframe,
             ["www.google.com", "www.duckduckgo.com"],
             ["me", "you"],
             5,
@@ -155,6 +155,7 @@ class MainController:
             task_info = (
                 f"Name: {task.name}\n"
                 f"Description: {task.description}\n"
+                f"Timeframe: {task.timeframe}\n"
                 f"Status: {task.progress}\n"
             )
 
