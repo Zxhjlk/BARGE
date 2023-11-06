@@ -12,6 +12,8 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QVBoxLayout,
+    QWidget,
+    QLabel
 )
 from sync import Syncing
 from task import Task
@@ -24,7 +26,6 @@ class MainController:
         self.view = BoardUi()
         self.board = TaskList("test Board")
         self.taskDict = {}
-        
         # Syncing.checkToken("token")
         # Return True if working token, False otherwise ask for Token
         # This checkToken should be run when loading a token from local
@@ -32,14 +33,37 @@ class MainController:
         self.sync = Syncing("test Board", "token")
         # self.sync.sync()
         # This sync method should be run connected to the sync button
-
+        self.view.addGithubKey_button.clicked.connect(self.addGithubKey)
         self.view.addTask_button.clicked.connect(self.addTaskScript)
         self.view.toDo_List.itemClicked.connect(self.clickTaskScript)
         self.view.inProgress_List.itemClicked.connect(self.clickTaskScript)
         self.view.done_List.itemClicked.connect(self.clickTaskScript)
         self.view.search_bar.textChanged.connect(self.filterTasks)
-        
+
         self.view.show()
+
+    def writeKeyToFile(self, keyText):
+        Syncing.checkToken(keyText)
+        with open("boardname_gitkey.txt", 'w') as f:
+            f.write(keyText)
+            
+
+    def addGithubKey(self):
+        dialog = QDialog(self.view)
+        dialog.setWindowTitle("Add GitHub Key")
+        dialog_layout = QVBoxLayout(dialog)
+
+        githubKey_input = QLineEdit(dialog)
+        dialog_layout.addWidget(githubKey_input)
+
+        add_key_button = QPushButton("Add Key", dialog)
+        add_key_button.clicked.connect(lambda : self.writeKeyToFile(githubKey_input.text()))
+        add_key_button.clicked.connect(dialog.accept)
+        dialog_layout.addWidget(add_key_button)
+
+        dialog.exec()
+
+        
 
     def addTaskScript(self):
         dialog = QDialog(self.view)
@@ -154,6 +178,18 @@ class MainController:
                     self.view.inProgress_List.addItem(item)
                 elif task.progress == "Done":
                     self.view.done_List.addItem(item)
+
+class AnotherWindow(QWidget):
+    """
+    This "window" is a QWidget. If it has no parent, it
+    will appear as a free-floating window as we want.
+    """
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout()
+        self.label = QLabel("Another Window")
+        layout.addWidget(self.label)
+        self.setLayout(layout)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

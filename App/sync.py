@@ -28,7 +28,7 @@ class SingletonMeta(type):
 
 
 class Syncing(metaclass=SingletonMeta):
-    def __init__(self, board_name="data", github_auth_token=None, git_url=None) -> None:
+    def __init__(self, board_name="data", github_auth_token='None', git_url=None) -> None:
         data_path = join(abspath(join(__file__, "../")), board_name)
         self.json_path = join(data_path, "data.json")
         print(data_path, self.json_path)

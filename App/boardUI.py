@@ -42,9 +42,12 @@ class BoardUi(QMainWindow):
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText("Search tasks")
 
+        self.addGithubKey_button = QPushButton("Add Github Key")
+
         button_layout = QVBoxLayout()
         button_layout.addWidget(self.search_bar)
         button_layout.addWidget(self.addTask_button)
+        button_layout.addWidget(self.addGithubKey_button)
 
         self.layout.addWidget(self.column_ui("To Do", self.toDo_List))
         self.layout.addWidget(self.column_ui("In Progress", self.inProgress_List))
