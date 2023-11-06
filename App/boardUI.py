@@ -6,9 +6,10 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QVBoxLayout,
     QWidget,
-    QLineEdit
+    QLineEdit,
 )
 from sync import Syncing
+
 
 class BoardUi(QMainWindow):
     def __init__(self):
@@ -23,7 +24,7 @@ class BoardUi(QMainWindow):
 
         self.setUp_ui()
 
-        #self.sync = Syncing("test Board", "token")
+        # self.sync = Syncing("test Board", "token")
 
     def setUp_ui(self):
         self.toDo_List = QListWidget()
@@ -42,15 +43,18 @@ class BoardUi(QMainWindow):
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText("Search tasks")
 
+        self.addGithubKey_button = QPushButton("Add Github Key")
+
         button_layout = QVBoxLayout()
         button_layout.addWidget(self.search_bar)
         button_layout.addWidget(self.addTask_button)
+        button_layout.addWidget(self.addGithubKey_button)
 
         self.layout.addWidget(self.column_ui("To Do", self.toDo_List))
         self.layout.addWidget(self.column_ui("In Progress", self.inProgress_List))
         self.layout.addWidget(self.column_ui("Done", self.done_List))
         self.layout.addLayout(button_layout)
-        
+
     def column_ui(self, title, list_widget):
         column_layout = QVBoxLayout()
         column_label = QLabel(title)
