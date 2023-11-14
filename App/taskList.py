@@ -36,7 +36,37 @@ class TaskList:
         with open(filename, "w") as file:
             json.dump(file_data, file, indent=2)
 
-        return True
+        return newTask.id
+    
+    def deleteTask(self, task_id):
+        filename = self.boardName + "_taskList.json"
+
+        if not os.path.isfile(filename):
+            return False  # No file or tasks to delete
+
+        with open(filename, "r") as file:
+            file_data = json.load(file)
+
+        tasks = file_data.get(self.boardName, {}).get("Tasks", [])
+
+        # Find the task with the given ID
+        found_task = None
+        for task in tasks:
+            if task.get("id") == task_id:
+                found_task = task
+                break
+
+        if found_task:
+            tasks.remove(found_task)
+            self.numTasks -= 1
+            file_data[self.boardName]["Tasks"] = tasks
+            file_data[self.boardName]["numTasks"] = self.numTasks
+
+            with open(filename, "w") as file:
+                json.dump(file_data, file, indent=2)
+            return True  # Task deleted successfully
+        else:
+            return False  # Task with given ID not found
 
 
 t = TaskList("testBoard")

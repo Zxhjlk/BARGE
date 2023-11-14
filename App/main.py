@@ -115,10 +115,10 @@ class MainController:
             status,
         )
 
-        self.board.addTask(newTask)
-        self.taskDict[id] = newTask
+        tid = self.board.addTask(newTask)
+        self.taskDict[tid] = newTask
         item = QListWidgetItem(newTask.name)
-        item.setData(Qt.ItemDataRole.UserRole, id)
+        item.setData(Qt.ItemDataRole.UserRole, tid)
 
         if status == "To Do":
             self.view.toDo_List.addItem(item)
@@ -136,9 +136,13 @@ class MainController:
         delete_button = QPushButton("Delete Task")
         view_button = QPushButton("View Task")
 
+        
         edit_button.clicked.connect(lambda: self.edit_task(item))
+        edit_button.clicked.connect(lambda:dialog.close())
         delete_button.clicked.connect(lambda: self.delete_task(item))
+        delete_button.clicked.connect(lambda:dialog.close())
         view_button.clicked.connect(lambda: self.viewTaskScript(item))
+        view_button.clicked.connect(lambda:dialog.close())
 
         dialog_layout.addWidget(edit_button)
         dialog_layout.addWidget(delete_button)
@@ -146,6 +150,61 @@ class MainController:
 
         dialog.setLayout(dialog_layout)
         dialog.exec()
+
+    def edit_task(self, item):
+        task_id = item.data(Qt.ItemDataRole.UserRole)
+        task = self.taskDict.get(task_id)
+
+        if task:
+            task_info = (
+                f"Name: {task.name}\n"
+                f"Description: {task.description}\n"
+                f"Timeframe: {task.timeframe}\n"
+                f"Status: {task.progress}\n"
+            )
+
+        QMessageBox.information(self.view, "Requested edit", task_info)
+
+    def delete_task(self, item):
+        task_id = item.data(Qt.ItemDataRole.UserRole)
+        task = self.taskDict.get(task_id)
+        dialog = QMessageBox()
+        dialog.setWindowTitle("Confirm Delete.")
+        dialog.setText("Are you sure you want to delete this task?")
+        dialog.setStandardButtons(QMessageBox.StandardButton.Yes | 
+                            QMessageBox.StandardButton.No)
+        if dialog.exec() == QMessageBox.StandardButton.Yes:
+            if self.removeTaskFromBoard(task, task_id):
+                QMessageBox.information(
+                    self.view, "Task Deleted", "The task has been deleted successfully!"
+                )
+            else:
+                QMessageBox.information(
+                    self.view, "Failure", "The task has not been deleted."
+                )
+
+    def removeTaskFromBoard(self, task, taskid):
+        if (taskid in self.taskDict):
+            del self.taskDict[taskid]
+            self.refresh()
+            return self.board.deleteTask(taskid)
+        return False
+
+    def refresh(self):
+        # Clear all lists
+        self.view.toDo_List.clear()
+        self.view.inProgress_List.clear()
+        self.view.done_List.clear()
+        for task_id, task in self.taskDict.items():
+            item = QListWidgetItem(task.name)
+            item.setData(Qt.ItemDataRole.UserRole, task_id)
+            if task.progress == "To Do":
+                self.view.toDo_List.addItem(item)
+            elif task.progress == "In Progress":
+                self.view.inProgress_List.addItem(item)
+            elif task.progress == "Done":
+                self.view.done_List.addItem(item)
+
 
     def viewTaskScript(self, item):
         task_id = item.data(Qt.ItemDataRole.UserRole)
@@ -176,9 +235,9 @@ class MainController:
                 if task.progress == "To Do":
                     self.view.toDo_List.addItem(item)
                 elif task.progress == "In Progress":
-                    self.view.inProgress_List.addItem(item)
+                    self.view.inProgress_List.addItem(task)
                 elif task.progress == "Done":
-                    self.view.done_List.addItem(item)
+                    self.view.done_List.addItem(task)
 
 
 class AnotherWindow(QWidget):
