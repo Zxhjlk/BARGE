@@ -71,6 +71,26 @@ class TaskList:
     def editTask(self, task_id, newTask):
         if self.deleteTask(task_id):
             self.addTask(newTask)
+            filename = self.boardName + "_taskList.json"
+
+            if not os.path.isfile(filename):
+                self.numTasks = 0
+                file_data = {self.boardName: {"numTasks": self.numTasks, "Tasks": []}}
+            else:
+                with open(filename, "r") as file:
+                    file_data = json.load(file)
+
+            newTask.id=task_id
+
+            taskDict = newTask.serialize()
+            file_data[self.boardName]["Tasks"].append(taskDict)
+            self.numTasks += 1
+            file_data[self.boardName]["numTasks"] = self.numTasks
+
+            with open(filename, "w") as file:
+                json.dump(file_data, file, indent=2)
+
+            return newTask.id
             return task_id
         return False
 
