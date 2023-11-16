@@ -96,7 +96,7 @@ class Syncing(metaclass=SingletonMeta):
 
     def addToken(self, github_auth_token) -> bool:
         if not self.checkToken(github_auth_token):
-            print(f"Unable to authenticate with the given github authentication token")
+            print("Unable to authenticate with the given github authentication token")
             # exit()
             return False
         self.github_auth_token = github_auth_token
@@ -108,7 +108,7 @@ class Syncing(metaclass=SingletonMeta):
         # Check if the provided github user exists
         if (
             get(
-                f"https://api.github.com/users/{self.github_username}/",
+                f"https://api.github.com/users/{github_username}",
                 headers=headers,
             ).status_code
             != 200
