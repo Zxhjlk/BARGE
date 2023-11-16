@@ -151,6 +151,7 @@ class MainController:
 
         edit_button = QPushButton("Edit Task")
         delete_button = QPushButton("Delete Task")
+        archive_button = QPushButton("Archive Task")
         view_button = QPushButton("View Task")
 
         
@@ -158,11 +159,15 @@ class MainController:
         edit_button.clicked.connect(lambda:dialog.close())
         delete_button.clicked.connect(lambda: self.delete_task(item))
         delete_button.clicked.connect(lambda:dialog.close())
+        archive_button.clicked.connect(lambda: self.archive_task(item))
+        archive_button.clicked.connect(lambda:dialog.close())
         view_button.clicked.connect(lambda: self.viewTaskScript(item))
         view_button.clicked.connect(lambda:dialog.close())
 
         dialog_layout.addWidget(edit_button)
         dialog_layout.addWidget(delete_button)
+        if (self.taskDict.get(item.data(Qt.ItemDataRole.UserRole)).progress=="Done"):
+            dialog_layout.addWidget(archive_button)
         dialog_layout.addWidget(view_button)
 
         dialog.setLayout(dialog_layout)
@@ -274,6 +279,31 @@ class MainController:
             del self.taskDict[taskid]
             self.refresh()
             return self.board.deleteTask(taskid)
+        return False
+    
+    def archive_task(self, item):
+        task_id = item.data(Qt.ItemDataRole.UserRole)
+        task = self.taskDict.get(task_id)
+        dialog = QMessageBox()
+        dialog.setWindowTitle("Confirm Archive.")
+        dialog.setText("Are you sure you want to archive this task?")
+        dialog.setStandardButtons(QMessageBox.StandardButton.Yes | 
+                            QMessageBox.StandardButton.No)
+        if dialog.exec() == QMessageBox.StandardButton.Yes:
+            if self.hideTaskFromBoard(task, task_id):
+                QMessageBox.information(
+                    self.view, "Task Archived", "The task has been hidden successfully!"
+                )
+            else:
+                QMessageBox.information(
+                    self.view, "Failure", "The task was not archived."
+                )
+    
+    def hideTaskFromBoard(self, task, taskid):
+        if (taskid in self.taskDict):
+            del self.taskDict[taskid]
+            self.refresh()
+            return True
         return False
 
     def refresh(self):
