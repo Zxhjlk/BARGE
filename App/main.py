@@ -155,15 +155,76 @@ class MainController:
         task_id = item.data(Qt.ItemDataRole.UserRole)
         task = self.taskDict.get(task_id)
 
-        if task:
-            task_info = (
-                f"Name: {task.name}\n"
-                f"Description: {task.description}\n"
-                f"Timeframe: {task.timeframe}\n"
-                f"Status: {task.progress}\n"
+        dialog = QDialog(self.view)
+        dialog.setWindowTitle("Edit Task")
+        dialog_Layout = QFormLayout(dialog)
+
+        name_input = QLineEdit(dialog)
+        name_input.setText(task.name)
+        description_input = QLineEdit(dialog)
+        description_input.setText(task.description)
+        timeframe_input = QLineEdit(dialog)
+        timeframe_input.setText(task.timeframe)
+        status_input = QComboBox(dialog)
+        status_input.addItems(["To Do", "In Progress", "Done"])
+        if task.progress == "To Do":
+            status_input.setCurrentIndex(0)
+        elif task.progress == "In Progress":
+            status_input.setCurrentIndex(1)
+        elif task.progress == "Done":
+            status_input.setCurrentIndex(2)
+
+        dialog_Layout.addRow("Name:", name_input)
+        dialog_Layout.addRow("Description:", description_input)
+        dialog_Layout.addRow("Timeframe(mm/dd/yyyy):", timeframe_input)
+        dialog_Layout.addRow("Status:", status_input)
+
+        buttons_layout = QHBoxLayout()
+
+        # edit button
+        edit_button = QPushButton("Edit", dialog)
+        edit_button.clicked.connect(
+            lambda: self.editTaskOnBoard(
+                task, task_id,
+                name_input.text(),
+                description_input.text(),
+                timeframe_input.text(),
+                status_input.currentText(),
+            )
+        )
+        edit_button.clicked.connect(dialog.accept)
+
+        # cancel button
+        cancel_button = QPushButton("Cancel", dialog)
+        #cancel_button.clicked.connect(
+            #lambda: self.editTaskOnBoard( )
+        #)
+        cancel_button.clicked.connect(dialog.reject)
+
+        buttons_layout.addWidget(edit_button)
+        buttons_layout.addWidget(cancel_button)
+        dialog_Layout.addRow(buttons_layout)
+
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            QMessageBox.information(
+                self.view, "Task Modified", "The task has been changed successfully!"
             )
 
-        QMessageBox.information(self.view, "Requested edit", task_info)
+    def editTaskOnBoard(self, task, taskid, nameIn, descriptionIn, timeframeIn, statusIn):
+        if (taskid in self.taskDict):
+            newTask = Task(
+                0, nameIn, descriptionIn, timeframeIn,
+                ["www.google.com", "www.duckduckgo.com"],["me", "you"],
+                5, statusIn,
+            )
+            
+            self.board.editTask(taskid, newTask)
+            self.taskDict[taskid] = newTask
+            item = QListWidgetItem(newTask.name)
+            item.setData(Qt.ItemDataRole.UserRole, taskid)
+            self.refresh()
+            return True
+        return False
 
     def delete_task(self, item):
         task_id = item.data(Qt.ItemDataRole.UserRole)

@@ -67,6 +67,13 @@ class TaskList:
             return True  # Task deleted successfully
         else:
             return False  # Task with given ID not found
+        
+    def editTask(self, task_id, newTask):
+        if self.deleteTask(task_id):
+            self.addTask(newTask)
+            return task_id
+        return False
+
 
 
 t = TaskList("testBoard")
