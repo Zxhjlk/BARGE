@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
-    QListWidget,
     QMainWindow,
     QPushButton,
     QVBoxLayout,
@@ -9,7 +8,7 @@ from PyQt6.QtWidgets import (
     QLineEdit,
 )
 from sync import Syncing
-
+from dragListWidget import DraggableListWidget
 
 class BoardUi(QMainWindow):
     def __init__(self):
@@ -27,15 +26,15 @@ class BoardUi(QMainWindow):
         # self.sync = Syncing("test Board", "token")
 
     def setUp_ui(self):
-        self.toDo_List = QListWidget()
+        self.toDo_List = DraggableListWidget("To Do")
         self.toDo_List.setMinimumWidth(300)
         self.toDo_List.setMaximumWidth(400)
 
-        self.inProgress_List = QListWidget()
+        self.inProgress_List = DraggableListWidget("In Progress")
         self.inProgress_List.setMinimumWidth(300)
         self.inProgress_List.setMaximumWidth(400)
 
-        self.done_List = QListWidget()
+        self.done_List = DraggableListWidget("Done")
         self.done_List.setMinimumWidth(300)
         self.done_List.setMaximumWidth(400)
 
