@@ -42,7 +42,38 @@ class MainController:
         self.view.done_List.itemClicked.connect(self.clickTaskScript)
         self.view.search_bar.textChanged.connect(self.filterTasks)
 
+        self.view.toDo_List.itemDropped.connect(self.handleItemDrop)
+        self.view.inProgress_List.itemDropped.connect(self.handleItemDrop)
+        self.view.done_List.itemDropped.connect(self.handleItemDrop)
+
         self.view.show()
+
+    def handleItemDrop(self, item, sourceList, targetList):
+        row = sourceList.row(sourceList.currentItem())
+        sourceList.takeItem(row)
+
+        newItem = QListWidgetItem(item)
+        targetList.addItem(newItem)
+
+        task_id = item.data(Qt.ItemDataRole.UserRole)
+        task = self.taskDict.get(task_id)
+        if not task:
+            return False
+        
+        newTask = Task(
+                0, task.name, task.description, task.timeframe,
+                task.links, task.people,
+                task.points, targetList.type,
+        )
+        self.board.editTask(task_id, newTask)
+        self.taskDict[task_id] = newTask
+
+        QMessageBox.information(
+            self.view, 
+            "Task Moved", 
+            f"Task moved from {sourceList.type} to {targetList.type}"
+        )
+        return True
 
     def writeKeyAndUserToFile(self, userText, keyText) -> None:
         if self.sync.addToken(keyText) and self.sync.addUsername(userText):
