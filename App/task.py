@@ -20,6 +20,6 @@ class Task:
             "links": self.links,
             "people": self.people,
             "points": self.points,
-            "self.progress": self.progress,
+            "progress": self.progress,
         }
         return dict

@@ -8,9 +8,9 @@ class TaskList:
     def __init__(self, boardName):
         self.numTasks = 0
         self.boardName = boardName
-        filename = boardName + "_taskList.json"
-        if os.path.isfile(filename):
-            with open(filename, "r") as infile:
+        self.filename = boardName + "_taskList.json"
+        if os.path.isfile(self.filename):
+            with open(self.filename, "r") as infile:
                 file_data = json.load(infile)
                 self.numTasks = file_data[self.boardName]["numTasks"]
 
