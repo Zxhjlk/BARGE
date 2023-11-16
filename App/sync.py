@@ -28,82 +28,99 @@ class SingletonMeta(type):
 
 
 class Syncing(metaclass=SingletonMeta):
-    def __init__(
-        self, github_auth_token, github_username, board_name="data", git_url=None
-    ) -> None:
-        if not self.checkToken(github_auth_token):
-            print(f"Unable to authenticate with the given github authentication token")
-            exit()
+    def __init__(self, board_name="data") -> None:
+        self.github_auth_token = ""
+        self.github_username = ""
 
-        self.github_auth_token = github_auth_token
-        self.github_username = github_username
+        self.data_path = join(abspath(join(__file__, "../")), board_name)
+        self.json_path = join(self.data_path, "data.json")
+        print(self.data_path, self.json_path)
 
-        data_path = join(abspath(join(__file__, "../")), board_name)
-        self.json_path = join(data_path, "data.json")
-        print(data_path, self.json_path)
+        self.repo = Repo()
 
-        if isdir(data_path) and isdir(join(data_path, ".git")):
-            self.repo = Repo(data_path)
-        elif git_url:
-            self.repo = Repo.clone_from(git_url, data_path)
+    def connectRepo(self) -> None:
+        if isdir(self.data_path) and isdir(join(self.data_path, ".git")):
+            self.repo = Repo(self.data_path)
         else:
-            self.repo = Repo.init(data_path, initial_branch="main")
+            self.createRepo()
 
-            headers = {"Authorization": f"Bearer {self.github_auth_token}"}
+    def createRepo(self) -> None:
+        self.repo = Repo.init(self.data_path, initial_branch="main")
 
-            # check if the provided github user exists
-            if (
-                get(
-                    f"https://api.github.com/users/{self.github_username}/",
-                    headers=headers,
-                ).status_code
-                != 200
-            ):
-                print("Github user is invalid")
-                exit()
+        headers = {"Authorization": f"Bearer {self.github_auth_token}"}
 
-            # Iterate to find a repo name that hasn't been taken
-            num_not_found = True
-            num = 0
-            while num_not_found:
-                check_repo = get(
-                    f"https://api.github.com/repos/{self.github_username}/BARGE-Kanban-{num}",
-                    headers=headers,
-                ).status_code
-                if check_repo == 404:
-                    break
-                elif check_repo == 401:
-                    print(
-                        f"Unable to authenticate with the given github authentication token"
-                    )
-                    exit()
-                num += 1
-
-            # Create the repository
-            name = f"BARGE-Kanban-{num}"
-            payload = {
-                "name": name,
-                "description": "Storing data for cloud storage and syncing of the BARGE (https://github.com/RafaelCenzano/BARGE) Kanban board application",
-            }
-
-            response = post(
-                "https://api.github.com/user/repos",
+        # Iterate to find a repo name that hasn't been taken
+        num_not_found = True
+        num = 0
+        while num_not_found:
+            check_repo = get(
+                f"https://api.github.com/repos/{self.github_username}/BARGE-Kanban-{num}",
                 headers=headers,
-                data=dumps(payload),
-            )
-
-            if response.status_code != 201:
+            ).status_code
+            if check_repo == 404:
+                break
+            elif check_repo == 401:
                 print(
-                    f"Unable to create GitHub repository, recieved {response.status_code} from GitHub"
+                    f"Unable to authenticate with the given github authentication token"
                 )
                 exit()
+            num += 1
 
-            created_repo = f"https://api.github.com/repos/{self.github_username}/BARGE-Kanban-{num}"
-            self.repo.create_remote("origin", created_repo)
-            self.repo.index.add([self.json_path])
-            now = datetime.utcnow().strftime("%-m/%-d/%Y %H:%M:%S")
-            self.repo.index.commit(f"Initial commit of tasks {now}")
-            self.repo.git.push("--set-upstream", self.repo.remote().name, "main")
+        # Create the repository
+        name = f"BARGE-Kanban-{num}"
+        payload = {
+            "name": name,
+            "description": "Storing data for cloud storage and syncing of the BARGE (https://github.com/RafaelCenzano/BARGE) Kanban board application",
+        }
+
+        response = post(
+            "https://api.github.com/user/repos",
+            headers=headers,
+            data=dumps(payload),
+        )
+
+        if response.status_code != 201:
+            print(
+                f"Unable to create GitHub repository, recieved {response.status_code} from GitHub"
+            )
+            exit()
+
+        created_repo = (
+            f"https://api.github.com/repos/{self.github_username}/BARGE-Kanban-{num}"
+        )
+        self.repo.create_remote("origin", created_repo)
+        self.repo.index.add([self.json_path])
+        now = datetime.utcnow().strftime("%-m/%-d/%Y %H:%M:%S")
+        self.repo.index.commit(f"Initial commit of tasks {now}")
+        self.repo.git.push("--set-upstream", self.repo.remote().name, "main")
+
+    def addToken(self, github_auth_token) -> bool:
+        if not self.checkToken(github_auth_token):
+            print(f"Unable to authenticate with the given github authentication token")
+            # exit()
+            return False
+        self.github_auth_token = github_auth_token
+        return True
+
+    def addUsername(self, github_username) -> bool:
+        headers = {"Authorization": f"Bearer {self.github_auth_token}"}
+
+        # Check if the provided github user exists
+        if (
+            get(
+                f"https://api.github.com/users/{self.github_username}/",
+                headers=headers,
+            ).status_code
+            != 200
+        ):
+            print("Github user is invalid")
+            # exit()
+            return False
+        self.github_username = github_username
+        return True
+
+    def readyToSync(self) -> bool:
+        return self.github_auth_token != "" and self.github_username != ""
 
     def sync(self) -> None:
         self.repo.remotes.origin.fetch()

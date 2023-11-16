@@ -31,8 +31,7 @@ class MainController:
         # Return True if working token, False otherwise ask for Token
         # This checkToken should be run when loading a token from local
         # storage on app start and when new tokens are added
-        self.sync = Syncing("test Board", "token")
-        # self.sync.sync()
+        self.sync = Syncing("test Board")
         # This sync method should be run connected to the sync button
         self.view.addGithubKey_button.clicked.connect(self.addGithubKey)
         self.view.addTask_button.clicked.connect(self.addTaskScript)
