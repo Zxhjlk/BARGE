@@ -45,8 +45,11 @@ class MainController:
 
     def writeKeyToFile(self, keyText):
         Syncing.checkToken(keyText)
-        with open("boardname_gitkey.txt", "w") as f:
-            f.write(keyText)
+        if Syncing.checkToken(keyText):
+            with open("boardname_gitkey.txt", "w") as f:
+                f.write(keyText)
+        else:
+            exit()
 
     def addGithubKey(self):
         dialog = QDialog(self.view)
@@ -73,13 +76,22 @@ class MainController:
         name_input = QLineEdit(dialog)
         description_input = QLineEdit(dialog)
         timeframe_input = QLineEdit(dialog)
+        link_input = QLineEdit(dialog)
+        people_input = QLineEdit(dialog)
+        points_input = QLineEdit(dialog)
         status_input = QComboBox(dialog)
         status_input.addItems(["To Do", "In Progress", "Done"])
+
 
         dialog_Layout.addRow("Name:", name_input)
         dialog_Layout.addRow("Description:", description_input)
         dialog_Layout.addRow("Timeframe(mm/dd/yyyy):", timeframe_input)
+        dialog_Layout.addRow("Links:", link_input)
+        dialog_Layout.addRow("People:", people_input)
+        dialog_Layout.addRow("Points:", points_input)
         dialog_Layout.addRow("Status:", status_input)
+
+
 
         buttons_layout = QHBoxLayout()
 
@@ -90,7 +102,10 @@ class MainController:
                 name_input.text(),
                 description_input.text(),
                 timeframe_input.text(),
-                status_input.currentText(),
+                link_input.text(),
+                people_input.text(),
+                points_input.text(),
+                status_input.currentText()
             )
         )
         add_button.clicked.connect(dialog.accept)
@@ -103,15 +118,15 @@ class MainController:
                 self.view, "Task Added", "The new task has been added successfully!"
             )
 
-    def addTaskToBoard(self, name, description, timeframe, status):
+    def addTaskToBoard(self, name, description, timeframe, links, people, points, status):
         newTask = Task(
             0,
             name,
             description,
             timeframe,
-            ["www.google.com", "www.duckduckgo.com"],
-            ["me", "you"],
-            5,
+            links,
+            people,
+            points,
             status,
         )
 
