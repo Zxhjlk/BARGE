@@ -42,10 +42,12 @@ class MainController:
 
         self.view.show()
 
-    def writeKeyToFile(self, keyText):
-        Syncing.checkToken(keyText)
-        if Syncing.checkToken(keyText):
+    def writeKeyToFile(self, keyText) -> None:
+        if self.sync.addToken(keyText):
             with open("boardname_gitkey.txt", "w") as f:
+                f.write(keyText)
+        if self.sync.addUsername(keyText):
+            with open("boardname_gitkey.txt", "w+") as f:
                 f.write(keyText)
         else:
             exit()
