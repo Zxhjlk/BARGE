@@ -86,4 +86,4 @@ class Syncing(metaclass=SingletonMeta):
     @staticmethod
     def checkToken(github_auth_token: str) -> bool:
         headers = {"Authorization": f"Bearer {github_auth_token}"}
-        return 200 == get("https://api.github.com/user/repos", headers).status_code
+        return 200 == get("https://api.github.com/user/repos", headers=headers).status_code

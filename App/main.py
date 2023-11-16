@@ -1,5 +1,6 @@
-import sys
+import sys, os
 
+from PyQt6 import QtGui
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QApplication,
@@ -13,12 +14,13 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QVBoxLayout,
     QWidget,
-    QLabel,
+    QLabel
 )
 from sync import Syncing
 from task import Task
 from taskList import TaskList
 from boardUI import BoardUi
+
 
 
 # Controller
@@ -370,7 +372,17 @@ class AnotherWindow(QWidget):
         self.setLayout(layout)
 
 
+basedir = os.path.dirname(__file__)
+
+try:
+    from ctypes import windll  # Only exists on Windows.
+    myappid = 'Barge.V1'
+    windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+except ImportError:
+    pass
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setWindowIcon(QtGui.QIcon(os.path.join(basedir, 'bargeLogo.ico')))
     controller = MainController()
     app.exec()
