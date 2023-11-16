@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import (
 from sync import Syncing
 from dragListWidget import DraggableListWidget
 
+
 class BoardUi(QMainWindow):
     def __init__(self):
         super(BoardUi, self).__init__()

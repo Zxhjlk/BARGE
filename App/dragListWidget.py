@@ -1,9 +1,6 @@
-from PyQt6.QtWidgets import (
-    QListWidget,
-    QAbstractItemView, 
-    QListWidgetItem
-)
+from PyQt6.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
 from PyQt6.QtCore import Qt, pyqtSignal
+
 
 class DraggableListWidget(QListWidget):
     itemDropped = pyqtSignal(QListWidgetItem, QListWidget, QListWidget)
@@ -15,10 +12,14 @@ class DraggableListWidget(QListWidget):
         self.type = type
 
     def dragEnterEvent(self, e):
-        e.accept() if e.mimeData().hasFormat('application/x-qabstractitemmodeldatalist') else e.ignore()
+        e.accept() if e.mimeData().hasFormat(
+            "application/x-qabstractitemmodeldatalist"
+        ) else e.ignore()
 
     def dragMoveEvent(self, e):
-        e.accept() if e.mimeData().hasFormat('application/x-qabstractitemmodeldatalist') else e.ignore()
+        e.accept() if e.mimeData().hasFormat(
+            "application/x-qabstractitemmodeldatalist"
+        ) else e.ignore()
 
     def dropEvent(self, e):
         if e.source() == self:
@@ -27,6 +28,6 @@ class DraggableListWidget(QListWidget):
         else:
             sourceListWidget = e.source()
             item = sourceListWidget.currentItem()
-        
+
             self.itemDropped.emit(item, sourceListWidget, self)
             e.accept()
