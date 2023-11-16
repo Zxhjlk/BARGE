@@ -43,25 +43,27 @@ class MainController:
 
         self.view.show()
 
-    def writeKeyToFile(self, keyText):
+    def writeKeyAndUserToFile(self, userText, keyText):
         Syncing.checkToken(keyText)
         if Syncing.checkToken(keyText):
             with open("boardname_gitkey.txt", "w") as f:
-                f.write(keyText)
+                f.write("Key :", keyText)
+                f.write("User : ", userText)
         else:
             exit()
 
     def addGithubKey(self):
         dialog = QDialog(self.view)
         dialog.setWindowTitle("Add GitHub Key")
-        dialog_layout = QVBoxLayout(dialog)
-
+        dialog_layout = QFormLayout(dialog)
+        githubUsername_input = QLineEdit(dialog)
         githubKey_input = QLineEdit(dialog)
-        dialog_layout.addWidget(githubKey_input)
+        dialog_layout.addRow("Github Key:", githubKey_input)
+        dialog_layout.addRow("Github Username:", githubUsername_input)
 
-        add_key_button = QPushButton("Add Key", dialog)
+        add_key_button = QPushButton("Add Username and Key", dialog)
         add_key_button.clicked.connect(
-            lambda: self.writeKeyToFile(githubKey_input.text())
+            lambda: self.writeKeyAndUserToFile(githubUsername_input.text(), githubKey_input.text())
         )
         add_key_button.clicked.connect(dialog.accept)
         dialog_layout.addWidget(add_key_button)
