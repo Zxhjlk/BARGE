@@ -37,7 +37,7 @@ class TaskList:
             json.dump(file_data, file, indent=2)
 
         return newTask.id
-    
+
     def deleteTask(self, task_id):
         filename = self.boardName + "_taskList.json"
 
@@ -67,7 +67,7 @@ class TaskList:
             return True  # Task deleted successfully
         else:
             return False  # Task with given ID not found
-        
+
     def editTask(self, task_id, newTask):
         if self.deleteTask(task_id):
             self.addTask(newTask)
@@ -80,7 +80,7 @@ class TaskList:
                 with open(filename, "r") as file:
                     file_data = json.load(file)
 
-            newTask.id=task_id
+            newTask.id = task_id
 
             taskDict = newTask.serialize()
             file_data[self.boardName]["Tasks"].append(taskDict)
@@ -93,7 +93,6 @@ class TaskList:
             return newTask.id
             return task_id
         return False
-
 
 
 t = TaskList("testBoard")
