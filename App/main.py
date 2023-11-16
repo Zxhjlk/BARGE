@@ -182,6 +182,12 @@ class MainController:
         description_input.setText(task.description)
         timeframe_input = QLineEdit(dialog)
         timeframe_input.setText(task.timeframe)
+        link_input = QLineEdit(dialog)
+        link_input.setText(task.links)
+        people_input = QLineEdit(dialog)
+        people_input.setText(task.people)
+        points_input = QLineEdit(dialog)
+        points_input.setText(task.points)
         status_input = QComboBox(dialog)
         status_input.addItems(["To Do", "In Progress", "Done"])
         if task.progress == "To Do":
@@ -194,6 +200,9 @@ class MainController:
         dialog_Layout.addRow("Name:", name_input)
         dialog_Layout.addRow("Description:", description_input)
         dialog_Layout.addRow("Timeframe(mm/dd/yyyy):", timeframe_input)
+        dialog_Layout.addRow("Links:", link_input)
+        dialog_Layout.addRow("People:", people_input)
+        dialog_Layout.addRow("Points:", points_input)
         dialog_Layout.addRow("Status:", status_input)
 
         buttons_layout = QHBoxLayout()
@@ -206,6 +215,9 @@ class MainController:
                 name_input.text(),
                 description_input.text(),
                 timeframe_input.text(),
+                link_input.text(),
+                people_input.text(),
+                points_input.text(),
                 status_input.currentText(),
             )
         )
@@ -213,9 +225,6 @@ class MainController:
 
         # cancel button
         cancel_button = QPushButton("Cancel", dialog)
-        #cancel_button.clicked.connect(
-            #lambda: self.editTaskOnBoard( )
-        #)
         cancel_button.clicked.connect(dialog.reject)
 
         buttons_layout.addWidget(edit_button)
@@ -227,12 +236,11 @@ class MainController:
                 self.view, "Task Modified", "The task has been changed successfully!"
             )
 
-    def editTaskOnBoard(self, task, taskid, nameIn, descriptionIn, timeframeIn, statusIn):
+    def editTaskOnBoard(self, task, taskid, nameIn, descriptionIn, timeframeIn, linkIn, peopleIn, pointsIn, statusIn):
         if (taskid in self.taskDict):
             newTask = Task(
                 0, nameIn, descriptionIn, timeframeIn,
-                ["www.google.com", "www.duckduckgo.com"],["me", "you"],
-                5, statusIn,
+                linkIn, peopleIn, pointsIn, statusIn,
             )
             
             self.board.editTask(taskid, newTask)
