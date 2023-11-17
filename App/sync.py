@@ -37,12 +37,14 @@ class Syncing(metaclass=SingletonMeta):
         print(self.data_path, self.json_path)
 
         self.repo = Repo()
+        self.connectedRepo = False
 
     def connectRepo(self) -> None:
         if isdir(self.data_path) and isdir(join(self.data_path, ".git")):
             self.repo = Repo(self.data_path)
         else:
             self.createRepo()
+        self.connectedRepo = True
 
     def createRepo(self) -> None:
         self.repo = Repo.init(self.data_path, initial_branch="main")
@@ -121,6 +123,9 @@ class Syncing(metaclass=SingletonMeta):
 
     def readyToSync(self) -> bool:
         return self.github_auth_token != "" and self.github_username != ""
+
+    def connected(self) -> bool:
+        return self.connectedRepo
 
     def sync(self) -> None:
         self.repo.remotes.origin.fetch()
