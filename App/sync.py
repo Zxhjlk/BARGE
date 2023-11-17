@@ -105,6 +105,8 @@ class Syncing(metaclass=SingletonMeta):
         return True
 
     def addUsername(self, github_username) -> bool:
+        if self.github_auth_token == "":
+            return False
         headers = {"Authorization": f"Bearer {self.github_auth_token}"}
 
         # Check if the provided github user exists
