@@ -40,6 +40,7 @@ class BoardUi(QMainWindow):
         self.done_List.setMaximumWidth(400)
 
         self.addTask_button = QPushButton("Add Task")
+        self.syncBoard_button = QPushButton("Sync Board")
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText("Search tasks")
 
@@ -49,6 +50,7 @@ class BoardUi(QMainWindow):
         button_layout.addWidget(self.search_bar)
         button_layout.addWidget(self.addTask_button)
         button_layout.addWidget(self.addGithubKey_button)
+        button_layout.addWidget(self.syncBoard_button)
 
         self.layout.addWidget(self.column_ui("To Do", self.toDo_List))
         self.layout.addWidget(self.column_ui("In Progress", self.inProgress_List))

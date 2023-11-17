@@ -1,5 +1,5 @@
 import sys, os
-
+import json
 from PyQt6 import QtGui
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
@@ -14,12 +14,13 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QVBoxLayout,
     QWidget,
-    QLabel,
+    QLabel
 )
 from sync import Syncing
 from task import Task
 from taskList import TaskList
 from boardUI import BoardUi
+
 
 
 # Controller
@@ -28,12 +29,15 @@ class MainController:
         self.view = BoardUi()
         self.board = TaskList("test Board")
         self.taskDict = {}
+        self.addAllTasksFromFile()
         # Syncing.checkToken("token")
         # Return True if working token, False otherwise ask for Token
         # This checkToken should be run when loading a token from local
         # storage on app start and when new tokens are added
-        self.sync = Syncing("test Board")
+        #self.sync = Syncing("test Board", "token")
+        # self.sync.sync()
         # This sync method should be run connected to the sync button
+        self.view.syncBoard_button.clicked.connect(self.clickSync)
         self.view.addGithubKey_button.clicked.connect(self.addGithubKey)
         self.view.addTask_button.clicked.connect(self.addTaskScript)
         self.view.toDo_List.itemClicked.connect(self.clickTaskScript)
@@ -46,6 +50,48 @@ class MainController:
         self.view.done_List.itemDropped.connect(self.handleItemDrop)
 
         self.view.show()
+    def clickSync(self):
+        print('hello world')
+        #put code here Raf
+
+    def addAllTasksFromFile(self):
+        if os.path.isfile(self.board.filename):
+            with open(self.board.filename, "r") as infile:
+                file_dict = json.load(infile)
+                test = file_dict[self.board.boardName]['Tasks']
+                print(test)
+                for task in test:
+                    self.addTaskFromInput(
+                        task['id'],
+                        task['name'],
+                        task['description'],
+                        task['timeframe'],
+                        task['links'],
+                        task['people'],
+                        task['points'],
+                        task['progress']
+                    )
+                
+    def addTaskFromInput(self, id, name, description, timeframe, links, people, points, status):
+        newTask = Task(
+            id,
+            name,
+            description,
+            timeframe,
+            links,
+            people,
+            points,
+            status,
+        )
+        self.taskDict[id] = newTask
+        item = QListWidgetItem(newTask.name)
+        item.setData(Qt.ItemDataRole.UserRole, id)
+        if status == "To Do":
+            self.view.toDo_List.addItem(item)
+        elif status == "In Progress":
+            self.view.inProgress_List.addItem(item)
+        elif status == "Done":
+            self.view.done_List.addItem(item)
 
     def handleItemDrop(self, item, sourceList, targetList):
         row = sourceList.row(sourceList.currentItem())
@@ -58,38 +104,34 @@ class MainController:
         task = self.taskDict.get(task_id)
         if not task:
             return False
-
+        
         newTask = Task(
-            0,
-            task.name,
-            task.description,
-            task.timeframe,
-            task.links,
-            task.people,
-            task.points,
-            targetList.type,
+                0, task.name, task.description, task.timeframe,
+                task.links, task.people,
+                task.points, targetList.type,
         )
         self.board.editTask(task_id, newTask)
         self.taskDict[task_id] = newTask
 
         QMessageBox.information(
-            self.view,
-            "Task Moved",
-            f"Task moved from {sourceList.type} to {targetList.type}",
+            self.view, 
+            "Task Moved", 
+            f"Task moved from {sourceList.type} to {targetList.type}"
         )
         return True
 
-    def writeKeyAndUserToFile(self, userText, keyText) -> None:
-        if self.sync.addToken(keyText) and self.sync.addUsername(userText):
+    def writeKeyAndUserToFile(self, userText, keyText):
+        Syncing.checkToken(keyText)
+        if Syncing.checkToken(keyText):
             with open("boardname_gitkey.txt", "w") as f:
-                f.write(f"Key :{keyText}\n")
-                f.write(f"User : {userText}")
+                f.write("Key :", keyText)
+                f.write("User : ", userText)
         else:
             exit()
 
     def addGithubKey(self):
         dialog = QDialog(self.view)
-        dialog.setWindowTitle("Add GitHub Authentication")
+        dialog.setWindowTitle("Add GitHub Key")
         dialog_layout = QFormLayout(dialog)
         githubUsername_input = QLineEdit(dialog)
         githubKey_input = QLineEdit(dialog)
@@ -98,9 +140,7 @@ class MainController:
 
         add_key_button = QPushButton("Add Username and Key", dialog)
         add_key_button.clicked.connect(
-            lambda: self.writeKeyAndUserToFile(
-                githubUsername_input.text(), githubKey_input.text()
-            )
+            lambda: self.writeKeyAndUserToFile(githubUsername_input.text(), githubKey_input.text())
         )
         add_key_button.clicked.connect(dialog.accept)
         dialog_layout.addWidget(add_key_button)
@@ -121,6 +161,7 @@ class MainController:
         status_input = QComboBox(dialog)
         status_input.addItems(["To Do", "In Progress", "Done"])
 
+
         dialog_Layout.addRow("Name:", name_input)
         dialog_Layout.addRow("Description:", description_input)
         dialog_Layout.addRow("Timeframe(mm/dd/yyyy):", timeframe_input)
@@ -128,6 +169,8 @@ class MainController:
         dialog_Layout.addRow("People:", people_input)
         dialog_Layout.addRow("Points:", points_input)
         dialog_Layout.addRow("Status:", status_input)
+
+
 
         buttons_layout = QHBoxLayout()
 
@@ -141,7 +184,7 @@ class MainController:
                 link_input.text(),
                 people_input.text(),
                 points_input.text(),
-                status_input.currentText(),
+                status_input.currentText()
             )
         )
         add_button.clicked.connect(dialog.accept)
@@ -154,9 +197,7 @@ class MainController:
                 self.view, "Task Added", "The new task has been added successfully!"
             )
 
-    def addTaskToBoard(
-        self, name, description, timeframe, links, people, points, status
-    ):
+    def addTaskToBoard(self, name, description, timeframe, links, people, points, status):
         newTask = Task(
             0,
             name,
@@ -190,18 +231,19 @@ class MainController:
         archive_button = QPushButton("Archive Task")
         view_button = QPushButton("View Task")
 
+        
         edit_button.clicked.connect(lambda: self.edit_task(item))
-        edit_button.clicked.connect(lambda: dialog.close())
+        edit_button.clicked.connect(lambda:dialog.close())
         delete_button.clicked.connect(lambda: self.delete_task(item))
-        delete_button.clicked.connect(lambda: dialog.close())
+        delete_button.clicked.connect(lambda:dialog.close())
         archive_button.clicked.connect(lambda: self.archive_task(item))
-        archive_button.clicked.connect(lambda: dialog.close())
+        archive_button.clicked.connect(lambda:dialog.close())
         view_button.clicked.connect(lambda: self.viewTaskScript(item))
-        view_button.clicked.connect(lambda: dialog.close())
+        view_button.clicked.connect(lambda:dialog.close())
 
         dialog_layout.addWidget(edit_button)
         dialog_layout.addWidget(delete_button)
-        if self.taskDict.get(item.data(Qt.ItemDataRole.UserRole)).progress == "Done":
+        if (self.taskDict.get(item.data(Qt.ItemDataRole.UserRole)).progress=="Done"):
             dialog_layout.addWidget(archive_button)
         dialog_layout.addWidget(view_button)
 
@@ -251,8 +293,7 @@ class MainController:
         edit_button = QPushButton("Edit", dialog)
         edit_button.clicked.connect(
             lambda: self.editTaskOnBoard(
-                task,
-                task_id,
+                task, task_id,
                 name_input.text(),
                 description_input.text(),
                 timeframe_input.text(),
@@ -277,30 +318,13 @@ class MainController:
                 self.view, "Task Modified", "The task has been changed successfully!"
             )
 
-    def editTaskOnBoard(
-        self,
-        task,
-        taskid,
-        nameIn,
-        descriptionIn,
-        timeframeIn,
-        linkIn,
-        peopleIn,
-        pointsIn,
-        statusIn,
-    ):
-        if taskid in self.taskDict:
+    def editTaskOnBoard(self, task, taskid, nameIn, descriptionIn, timeframeIn, linkIn, peopleIn, pointsIn, statusIn):
+        if (taskid in self.taskDict):
             newTask = Task(
-                0,
-                nameIn,
-                descriptionIn,
-                timeframeIn,
-                linkIn,
-                peopleIn,
-                pointsIn,
-                statusIn,
+                0, nameIn, descriptionIn, timeframeIn,
+                linkIn, peopleIn, pointsIn, statusIn,
             )
-
+            
             self.board.editTask(taskid, newTask)
             self.taskDict[taskid] = newTask
             item = QListWidgetItem(newTask.name)
@@ -315,9 +339,8 @@ class MainController:
         dialog = QMessageBox()
         dialog.setWindowTitle("Confirm Delete.")
         dialog.setText("Are you sure you want to delete this task?")
-        dialog.setStandardButtons(
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-        )
+        dialog.setStandardButtons(QMessageBox.StandardButton.Yes | 
+                            QMessageBox.StandardButton.No)
         if dialog.exec() == QMessageBox.StandardButton.Yes:
             if self.removeTaskFromBoard(task, task_id):
                 QMessageBox.information(
@@ -329,21 +352,20 @@ class MainController:
                 )
 
     def removeTaskFromBoard(self, task, taskid):
-        if taskid in self.taskDict:
+        if (taskid in self.taskDict):
             del self.taskDict[taskid]
             self.refresh()
             return self.board.deleteTask(taskid)
         return False
-
+    
     def archive_task(self, item):
         task_id = item.data(Qt.ItemDataRole.UserRole)
         task = self.taskDict.get(task_id)
         dialog = QMessageBox()
         dialog.setWindowTitle("Confirm Archive.")
         dialog.setText("Are you sure you want to archive this task?")
-        dialog.setStandardButtons(
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-        )
+        dialog.setStandardButtons(QMessageBox.StandardButton.Yes | 
+                            QMessageBox.StandardButton.No)
         if dialog.exec() == QMessageBox.StandardButton.Yes:
             if self.hideTaskFromBoard(task, task_id):
                 QMessageBox.information(
@@ -353,9 +375,9 @@ class MainController:
                 QMessageBox.information(
                     self.view, "Failure", "The task was not archived."
                 )
-
+    
     def hideTaskFromBoard(self, task, taskid):
-        if taskid in self.taskDict:
+        if (taskid in self.taskDict):
             del self.taskDict[taskid]
             self.refresh()
             return True
@@ -375,6 +397,7 @@ class MainController:
                 self.view.inProgress_List.addItem(item)
             elif task.progress == "Done":
                 self.view.done_List.addItem(item)
+
 
     def viewTaskScript(self, item):
         task_id = item.data(Qt.ItemDataRole.UserRole)
@@ -428,14 +451,13 @@ basedir = os.path.dirname(__file__)
 
 try:
     from ctypes import windll  # Only exists on Windows.
-
-    myappid = "Barge.V1"
+    myappid = 'Barge.V1'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon(os.path.join(basedir, "bargeLogo.ico")))
+    app.setWindowIcon(QtGui.QIcon(os.path.join(basedir, 'bargeLogo.ico')))
     controller = MainController()
     app.exec()
