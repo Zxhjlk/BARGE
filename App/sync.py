@@ -36,7 +36,7 @@ class Syncing(metaclass=SingletonMeta):
         self.json_path = join(self.data_path, "data.json")
         print(self.data_path, self.json_path)
 
-        self.repo = Repo()
+        self.repo = None
         self.connectedRepo = False
 
     def connectRepo(self) -> None:
@@ -128,13 +128,14 @@ class Syncing(metaclass=SingletonMeta):
         return self.connectedRepo
 
     def sync(self) -> None:
-        self.repo.remotes.origin.fetch()
-        if self.repo.index.diff("HEAD"):
-            self.repo.index.add([self.json_path])
-            now = datetime.utcnow().strftime("%-m/%-d/%Y %H:%M:%S")
-            self.repo.index.commit(f"Update tasks {now}")
-        self.repo.remotes.origin.pull(rebase=True)
-        self.repo.remotes.origin.push()
+        if self.repo is not None:
+            self.repo.remotes.origin.fetch()
+            if self.repo.index.diff("HEAD"):
+                self.repo.index.add([self.json_path])
+                now = datetime.utcnow().strftime("%-m/%-d/%Y %H:%M:%S")
+                self.repo.index.commit(f"Update tasks {now}")
+            self.repo.remotes.origin.pull(rebase=True)
+            self.repo.remotes.origin.push()
 
     @staticmethod
     def checkToken(github_auth_token: str) -> bool:
