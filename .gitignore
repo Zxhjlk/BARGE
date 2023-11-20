@@ -1,11 +1,9 @@
 *.pyc
 *.DS_Store
-*.json
 venv/
 
 
 dist/
 build/
 main.spec
-*.json
 

@@ -42,7 +42,7 @@ class MainController:
         self.view.done_List.itemDropped.connect(self.handleItemDrop)
 
         # TODO: Need to add board name later VVVV
-        self.sync = Syncing("test Board")
+        self.sync = Syncing(self.board.filename)
 
         self.view.show()
 
@@ -127,7 +127,7 @@ class MainController:
         return True
 
     def writeKeyAndUserToFile(self, userText, keyText) -> None:
-        if self.sync.addUsername(userText) and self.sync.addToken(keyText):
+        if self.sync.addToken(keyText) and self.sync.addUsername(userText):
             with open("boardname_gitkey.txt", "w") as f:
                 f.write(f"Key :f{keyText}\n")
                 f.write(f"User : f{userText}\n")
@@ -140,8 +140,8 @@ class MainController:
         dialog_layout = QFormLayout(dialog)
         githubUsername_input = QLineEdit(dialog)
         githubKey_input = QLineEdit(dialog)
-        dialog_layout.addRow("Github Key:", githubKey_input)
         dialog_layout.addRow("Github Username:", githubUsername_input)
+        dialog_layout.addRow("Github Key:", githubKey_input)
 
         add_key_button = QPushButton("Add Username and Key", dialog)
         add_key_button.clicked.connect(
