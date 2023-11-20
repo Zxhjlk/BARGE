@@ -1,3 +1,4 @@
+from curses.ascii import isdigit
 import json
 import os
 
@@ -8,20 +9,20 @@ class TaskList:
     def __init__(self, boardName):
         self.numTasks = 0
         self.boardName = boardName
-        self.filename = boardName + "_taskList.json"
+        data_path = os.path.join(os.path.abspath(os.path.join(__file__, "../")), self.boardName.replace(" ", "_"))
+        self.filename = os.path.join(data_path, "data.json")
         if os.path.isfile(self.filename):
             with open(self.filename, "r") as infile:
                 file_data = json.load(infile)
                 self.numTasks = file_data[self.boardName]["numTasks"]
 
     def addTask(self, newTask):
-        filename = self.boardName + "_taskList.json"
 
-        if not os.path.isfile(filename):
+        if not os.path.isfile(self.filename):
             self.numTasks = 0
             file_data = {self.boardName: {"numTasks": self.numTasks, "Tasks": []}}
         else:
-            with open(filename, "r") as file:
+            with open(self.filename, "r") as file:
                 file_data = json.load(file)
 
         existing_ids = {task["id"] for task in file_data[self.boardName]["Tasks"]}
@@ -33,7 +34,9 @@ class TaskList:
         self.numTasks += 1
         file_data[self.boardName]["numTasks"] = self.numTasks
 
-        with open(filename, "w") as file:
+        if not os.path.isdir(os.path.dirname(self.filename)):
+            os.mkdir(os.path.dirname(self.filename))
+        with open(self.filename, "w") as file:
             json.dump(file_data, file, indent=2)
 
         return newTask.id
@@ -95,28 +98,28 @@ class TaskList:
         return False
 
 
-t = TaskList("testBoard")
+# t = TaskList("testBoard")
 
-newT = Task(
-    0,
-    "test",
-    "this is a test",
-    "01/01/9999",
-    ["www.google.com", "www.duckduckgo.com"],
-    ["me", "you"],
-    5,
-    "To Do",
-)
-newT2 = Task(
-    0,
-    "test",
-    "this is a test",
-    "01/01/9999",
-    ["www.google.com", "www.duckduckgo.com"],
-    ["me", "you"],
-    5,
-    "To Do",
-)
+# newT = Task(
+#     0,
+#     "test",
+#     "this is a test",
+#     "01/01/9999",
+#     ["www.google.com", "www.duckduckgo.com"],
+#     ["me", "you"],
+#     5,
+#     "To Do",
+# )
+# newT2 = Task(
+#     0,
+#     "test",
+#     "this is a test",
+#     "01/01/9999",
+#     ["www.google.com", "www.duckduckgo.com"],
+#     ["me", "you"],
+#     5,
+#     "To Do",
+# )
 
 # test for local machine
 if __name__ == "__main__":

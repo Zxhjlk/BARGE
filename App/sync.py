@@ -1,6 +1,6 @@
 from datetime import datetime
 from json import dumps
-from os.path import abspath, exists, isdir, join
+from os.path import isdir, join, dirname
 
 from git import Repo
 from requests import get, post
@@ -28,13 +28,12 @@ class SingletonMeta(type):
 
 
 class Syncing(metaclass=SingletonMeta):
-    def __init__(self, board_name="data") -> None:
+    def __init__(self, filename) -> None:
         self.github_auth_token = ""
         self.github_username = ""
 
-        self.data_path = join(abspath(join(__file__, "../")), board_name)
-        self.json_path = join(self.data_path, "data.json")
-        print(self.data_path, self.json_path)
+        self.data_path = dirname(filename)
+        self.json_path = filename
 
         self.repo = None
         self.connectedRepo = False
@@ -68,6 +67,7 @@ class Syncing(metaclass=SingletonMeta):
                 exit()
             num += 1
 
+        print("Creating repository")
         # Create the repository
         name = f"BARGE-Kanban-{num}"
         payload = {
@@ -88,8 +88,9 @@ class Syncing(metaclass=SingletonMeta):
             exit()
 
         created_repo = (
-            f"https://api.github.com/repos/{self.github_username}/BARGE-Kanban-{num}"
+            f"https://github.com/{self.github_username}/BARGE-Kanban-{num}"
         )
+        print(f"Created {created_repo}")
         self.repo.create_remote("origin", created_repo)
         self.repo.index.add([self.json_path])
         now = datetime.utcnow().strftime("%-m/%-d/%Y %H:%M:%S")
@@ -130,12 +131,12 @@ class Syncing(metaclass=SingletonMeta):
         return self.connectedRepo
 
     def sync(self) -> None:
+        print("Syncing")
         if self.repo is not None:
             self.repo.remotes.origin.fetch()
-            if self.repo.index.diff("HEAD"):
-                self.repo.index.add([self.json_path])
-                now = datetime.utcnow().strftime("%-m/%-d/%Y %H:%M:%S")
-                self.repo.index.commit(f"Update tasks {now}")
+            self.repo.index.add([self.json_path])
+            now = datetime.utcnow().strftime("%-m/%-d/%Y %H:%M:%S")
+            self.repo.index.commit(f"Update tasks {now}")
             self.repo.remotes.origin.pull(rebase=True)
             self.repo.remotes.origin.push()
 

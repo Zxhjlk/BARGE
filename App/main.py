@@ -42,7 +42,7 @@ class MainController:
         self.view.done_List.itemDropped.connect(self.handleItemDrop)
 
         # TODO: Need to add board name later VVVV
-        self.sync = Syncing("test Board")
+        self.sync = Syncing(self.board.filename)
 
         self.view.show()
 
