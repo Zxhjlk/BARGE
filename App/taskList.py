@@ -44,7 +44,7 @@ class TaskList:
         return newTask.id
 
     def deleteTask(self, task_id):
-        filename = self.boardName + "_taskList.json"
+        filename = self.filename
 
         if not os.path.isfile(filename):
             return False  # No file or tasks to delete
@@ -75,8 +75,7 @@ class TaskList:
 
     def editTask(self, task_id, newTask):
         if self.deleteTask(task_id):
-            self.addTask(newTask)
-            filename = self.boardName + "_taskList.json"
+            filename = self.filename
 
             if not os.path.isfile(filename):
                 self.numTasks = 0
