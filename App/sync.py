@@ -87,9 +87,7 @@ class Syncing(metaclass=SingletonMeta):
             )
             exit()
 
-        created_repo = (
-            f"https://github.com/{self.github_username}/BARGE-Kanban-{num}"
-        )
+        created_repo = f"https://github.com/{self.github_username}/BARGE-Kanban-{num}"
         print(f"Created {created_repo}")
         self.repo.create_remote("origin", created_repo)
         self.repo.index.add([self.json_path])

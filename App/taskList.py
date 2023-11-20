@@ -9,7 +9,10 @@ class TaskList:
     def __init__(self, boardName):
         self.numTasks = 0
         self.boardName = boardName
-        data_path = os.path.join(os.path.abspath(os.path.join(__file__, "../")), self.boardName.replace(" ", "_"))
+        data_path = os.path.join(
+            os.path.abspath(os.path.join(__file__, "../")),
+            self.boardName.replace(" ", "_"),
+        )
         self.filename = os.path.join(data_path, "data.json")
         if os.path.isfile(self.filename):
             with open(self.filename, "r") as infile:
@@ -17,7 +20,6 @@ class TaskList:
                 self.numTasks = file_data[self.boardName]["numTasks"]
 
     def addTask(self, newTask):
-
         if not os.path.isfile(self.filename):
             self.numTasks = 0
             file_data = {self.boardName: {"numTasks": self.numTasks, "Tasks": []}}
