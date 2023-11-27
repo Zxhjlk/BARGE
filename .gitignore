@@ -5,5 +5,5 @@ venv/
 
 dist/
 build/
-main.spec
 
+App/boardname_gitkey.txt
